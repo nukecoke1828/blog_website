@@ -1,0 +1,52 @@
+﻿{{ define "no_permission" }}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>无权限创建博客</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f8fa;
+            margin: 0;
+            padding: 0;
+        }
+        .navbar {
+            background-color: #343a40;
+            padding: 1em;
+            display: flex;
+            justify-content: space-around;
+        }
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .navbar a:hover {
+            text-decoration: underline;
+        }
+        .container {
+            padding: 4em;
+            text-align: center;
+        }
+        .message {
+            font-size: 1.5em;
+            color: #dc3545;
+            margin-top: 2em;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="/blog">博客列表</a>
+        <a href="/blog/create">创建博客</a>
+        <a href="/profile">关于</a>
+    </div>
+
+    <div class="container">
+        <h1>无权限操作</h1>
+        <p class="message">您没有权限创建博客文章，请联系管理员。</p>
+    </div>
+</body>
+</html>
+{{ end }}

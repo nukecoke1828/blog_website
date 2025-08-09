@@ -1,0 +1,126 @@
+﻿<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>创建博客</title>
+    <style>
+        /* 全局样式 */
+        body {
+            font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        
+        /* 表单容器样式 */
+        .form-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 30px;
+            margin-top: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        h1 {
+            color: #343a40;
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        /* 表单组样式 */
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        /* 输入框样式 */
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            font-size: 16px;
+            font-family: inherit;
+            transition: border-color 0.3s ease;
+        }
+        
+        input[type="text"]:focus,
+        textarea:focus {
+            border-color: #0d6efd;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.1);
+        }
+        
+        /* 文本区域样式 */
+        textarea {
+            resize: vertical;
+            min-height: 200px;
+        }
+        
+        /* 提交按钮样式 */
+        .submit-btn {
+            background-color: #0d6efd;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+            display: block;
+            margin: 0 auto;
+        }
+        
+        .submit-btn:hover {
+            background-color: #0b5ed7;
+        }
+        
+        /* 标签说明样式 */
+        .tag-hint {
+            font-size: 14px;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    {{template "nav.html" .}}
+    
+    <div class="form-container">
+        <h1>创建新博客</h1>
+        <form action="/blog/create" method="post">
+            <div class="form-group">
+                <label for="title">标题：</label>
+                <input type="text" id="title" name="title" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="content">内容：</label>
+                <textarea id="content" name="content" rows="10" required></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="tags">标签（可选，使用英文逗号分隔）：</label>
+                <input type="text" id="tags" name="tags">
+                <div class="tag-hint">示例：技术,博客,个人心得</div>
+            </div>
+            
+            <button type="submit" class="submit-btn">发布博客</button>
+        </form>
+    </div>
+</body>
+</html>

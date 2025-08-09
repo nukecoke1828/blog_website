@@ -1,0 +1,129 @@
+﻿<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>博客列表</title>
+    <style>
+        /* 全局样式 */
+        body {
+            font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        
+        /* 头部样式 */
+        header {
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            color: #343a40;
+            border-bottom: 2px solid #dee2e6;
+            padding-bottom: 10px;
+        }
+        
+        /* 博客卡片样式 */
+        .blog-card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .blog-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* 博客标题样式 */
+        .blog-title {
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+        
+        .blog-title a {
+            color: #212529;
+            text-decoration: none;
+        }
+        
+        .blog-title a:hover {
+            color: #0d6efd;
+            text-decoration: underline;
+        }
+        
+        /* 博客内容样式 */
+        .blog-content {
+            font-size: 16px;
+            color: #495057;
+            margin-bottom: 15px;
+        }
+        
+        /* 博客标签样式 */
+        .blog-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            font-size: 14px;
+            color: #6c757d;
+        }
+        
+        .blog-tags span {
+            background-color: #e9ecef;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+        
+        /* 分割线样式 */
+        hr {
+            border: none;
+            border-top: 1px solid #dee2e6;
+            margin: 20px 0;
+        }
+        
+        /* 无博客提示样式 */
+        .no-blogs {
+            text-align: center;
+            padding: 40px;
+            font-size: 18px;
+            color: #adb5bd;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    {{template "nav.html" .}}
+    
+    <header>
+        <h1>我的博客</h1>
+    </header>
+    
+    <main>
+        {{ if .Blogs }}
+            {{ range .Blogs }}
+                <article class="blog-card">
+                    <h2 class="blog-title"><a href="/blog/{{ .ID }}">{{ .Title }}</a></h2>
+                    <p class="blog-content">{{ .Content }}</p>
+                    <div class="blog-tags">
+                        <span>标签：</span>
+                        {{ range .Tags }}
+                            <span>{{ . }}</span>
+                        {{ end }}
+                    </div>
+                    <hr>
+                </article>
+            {{ end }}
+        {{ else }}
+            <div class="no-blogs">
+                <p>还没有发布任何博客。</p>
+            </div>
+        {{ end }}
+    </main>
+</body>
+</html>

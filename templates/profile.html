@@ -1,0 +1,96 @@
+﻿<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ .title }}</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        
+        h1 {
+            color: #343a40;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .profile-section {
+            background-color: white;
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+        
+        .info-item {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .info-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        strong {
+            font-weight: 600;
+            color: #495057;
+            display: inline-block;
+            min-width: 120px;
+        }
+        
+        ul {
+            padding-left: 25px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+        
+        p {
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    {{template "nav.html" .}}
+    
+    <div class="profile-section">
+        <h1>{{ .title }}</h1>
+        
+        <div class="info-item">
+            <p><strong>姓名：</strong>{{ .name }}</p>
+        </div>
+        
+        <div class="info-item">
+            <p><strong>学校：</strong>{{ .school }}</p>
+        </div>
+        
+        <div class="info-item">
+            <p><strong>家乡：</strong>{{ .hometown }}</p>
+        </div>
+        
+        <div class="info-item">
+            <p><strong>兴趣爱好：</strong></p>
+            <ul>
+                {{ range .hobbies }}
+                <li>{{ . }}</li>
+                {{ end }}
+            </ul>
+        </div>
+        
+        <div class="info-item">
+            <p><strong>个人简介：</strong>{{ .introduction }}</p>
+        </div>
+    </div>
+</body>
+</html>

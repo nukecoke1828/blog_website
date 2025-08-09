@@ -1,0 +1,491 @@
+﻿<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ .Blog.Title }} - 博客详情</title>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2c3e50;
+            --accent-color: #e74c3c;
+            --light-gray: #f8f9fa;
+            --border-color: #e0e0e0;
+            --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            --border-radius: 8px;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f7fa;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .blog-header {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: var(--shadow);
+        }
+        
+        h1 {
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+            font-size: 2.2rem;
+        }
+        
+        .meta-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .meta-info span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 25px;
+        }
+        
+        .tag {
+            background-color: #e0f0ff;
+            color: var(--primary-color);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        
+        .blog-content {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: var(--shadow);
+            line-height: 1.8;
+        }
+        
+        .actions {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            background-color: var(--light-gray);
+            color: var(--secondary-color);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .action-btn:hover {
+            background-color: #e9ecef;
+            transform: translateY(-2px);
+        }
+        
+        .action-btn.liked {
+            background-color: #e6f7ff;
+            color: var(--primary-color);
+        }
+        
+        .action-btn.comment-btn {
+            background-color: #f0f7ff;
+            color: var(--primary-color);
+        }
+        
+        .section-title {
+            color: var(--secondary-color);
+            margin: 30px 0 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary-color);
+            font-size: 1.5rem;
+        }
+        
+        .comments-container {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 25px;
+            box-shadow: var(--shadow);
+        }
+        
+        .comment {
+            padding: 20px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .comment:last-child {
+            border-bottom: none;
+        }
+        
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .comment-author {
+            font-weight: 600;
+            color: var(--secondary-color);
+        }
+        
+        .comment-time {
+            color: #777;
+            font-size: 0.85rem;
+        }
+        
+        .comment-content {
+            margin-bottom: 15px;
+            color: #444;
+            padding-left: 5px;
+        }
+        
+        .comment-actions {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .comment-action {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            font-size: 0.9rem;
+            padding: 5px;
+            transition: color 0.2s;
+        }
+        
+        .comment-action:hover {
+            color: var(--primary-color);
+        }
+        
+        .comment-action.liked {
+            color: var(--accent-color);
+        }
+        
+        .reply-form {
+            margin-top: 15px;
+            padding-left: 20px;
+            border-left: 2px solid var(--border-color);
+        }
+        
+        .reply-form textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            margin-bottom: 12px;
+            resize: vertical;
+            min-height: 80px;
+            font-family: inherit;
+        }
+        
+        .reply-form button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 16px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+        
+        .reply-form button:hover {
+            background-color: #2980b9;
+        }
+        
+        .no-comments {
+            text-align: center;
+            color: #777;
+            padding: 30px 0;
+        }
+        
+        .comment-form {
+            margin-top: 30px;
+            background-color: #f8f9fa;
+            padding: 25px;
+            border-radius: var(--border-radius);
+        }
+        
+        .comment-form textarea {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            margin-bottom: 15px;
+            resize: vertical;
+            min-height: 100px;
+            font-family: inherit;
+        }
+        
+        .comment-form button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 12px 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+        
+        .comment-form button:hover {
+            background-color: #2980b9;
+        }
+        
+        .login-prompt {
+            text-align: center;
+            padding: 15px;
+            background-color: #fff8e1;
+            border-radius: var(--border-radius);
+            margin-top: 20px;
+        }
+        
+        .login-prompt a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .login-prompt a:hover {
+            text-decoration: underline;
+        }
+        
+        .replies {
+            margin-left: 25px;
+            padding-left: 20px;
+            border-left: 2px solid var(--border-color);
+            margin-top: 20px;
+        }
+        
+        .reply-indicator {
+            font-size: 0.85rem;
+            color: #777;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .reply-indicator::before {
+            content: "↳";
+            margin-right: 5px;
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 导航栏 -->
+        {{ template "nav.html" . }}
+
+        <!-- 博客头部 -->
+        <div class="blog-header">
+            <h1>{{ .Blog.Title }}</h1>
+            
+            <div class="meta-info">
+                <span>
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
+                    </svg>
+                    作者：{{ .Blog.Author.Username }}
+                </span>
+                <span>
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>
+                        <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/>
+                    </svg>
+                    创建时间：{{ .Blog.CreatedAt }}
+                </span>
+            </div>
+            
+            <div class="tags">
+                {{ range .Blog.Tags }}
+                <span class="tag">{{ . }}</span>
+                {{ end }}
+            </div>
+        </div>
+        
+        <!-- 博客内容 -->
+        <div class="blog-content">
+            <p>{{ .Blog.Content }}</p>
+        </div>
+        
+        <!-- 操作按钮 -->
+        <div class="actions">
+            <form action="/blog/{{ .Blog.ID }}/like" method="POST">
+                {{ if .Liked }}
+                    <button type="submit" class="action-btn liked">
+                        <svg width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
+                        </svg>
+                        已点赞 ({{ .LikeNum }})
+                    </button>
+                {{ else }}
+                    <button type="submit" class="action-btn">
+                        <svg width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15z"/>
+                        </svg>
+                        点赞 ({{ .LikeNum }})
+                    </button>
+                {{ end }}
+            </form>
+            
+            <a href="#comment-section" class="action-btn comment-btn">
+                <svg width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M14 1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1h-2.5a2 2 0 0 0-1.6.8L8 14.333 6.1 11.8a2 2 0 0 0-1.6-.8H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2.5a1 1 0 0 1 .8.4l1.9 2.533a1 1 0 0 0 1.6 0l1.9-2.533a1 1 0 0 1 .8-.4H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
+                    <path d="M5 6a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm4 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm4 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+                </svg>
+                评论 ({{ len .Comments }})
+            </a>
+        </div>
+        
+        <!-- 评论区域 -->
+        <h2 class="section-title" id="comment-section">评论</h2>
+        <div class="comments-container">
+            {{ if .Comments }}
+                {{ range .Comments }}
+                <!-- 递归渲染评论 -->
+                {{ template "comment-item" . }}
+                {{ end }}
+            {{ else }}
+                <div class="no-comments">
+                    <p>还没有人评论，快来抢沙发！</p>
+                </div>
+            {{ end }}
+            
+            <!-- 发表评论表单 -->
+            {{ if .User }}
+                <div class="comment-form">
+                    <h3>发表评论</h3>
+                    <form action="/blog/{{ .Blog.ID }}/comment" method="POST">
+                        <textarea name="content" placeholder="写下你的评论..." required></textarea>
+                        <button type="submit">提交评论</button>
+                    </form>
+                </div>
+            {{ else }}
+                <div class="login-prompt">
+                    <p>请 <a href="/login">登录</a> 后再发表评论</p>
+                </div>
+            {{ end }}
+        </div>
+    </div>
+    
+    <!-- 定义评论项模板（在文件底部） -->
+    {{ define "comment-item" }}
+    <div class="comment">
+        {{ if .ParentID }}
+        <div class="reply-indicator">
+            回复 {{ .Parent.Author.Username }}
+        </div>
+        {{ end }}
+        
+        <div class="comment-header">
+            <div class="comment-author">{{ .Author.Username }}</div>
+            <div class="comment-time">{{ .CreatedAt }}</div>
+        </div>
+        <div class="comment-content">{{ .Content }}</div>
+        
+        <div class="comment-actions">
+            <form action="/comment/{{ .ID }}/like" method="POST">
+                {{ if .Liked }}
+                    <button type="submit" class="comment-action liked">
+                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
+                        </svg>
+                        已点赞 ({{ .LikeNum }})
+                    </button>
+                {{ else }}
+                    <button type="submit" class="comment-action">
+                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15z"/>
+                        </svg>
+                        点赞 ({{ .LikeNum }})
+                    </button>
+                {{ end }}
+            </form>
+            
+            <button class="comment-action toggle-reply">
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                    <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
+                </svg>
+                回复
+            </button>
+        </div>
+        
+        <div class="reply-form" style="display: none;">
+            <form action="/comment/{{ .ID }}/reply" method="POST">
+                <textarea name="content" placeholder="回复这条评论..." required></textarea>
+                <button type="submit">提交回复</button>
+            </form>
+        </div>
+        
+        <!-- 递归渲染子回复 -->
+        {{ if .Replies }}
+        <div class="replies">
+            {{ range .Replies }}
+                {{ template "comment-item" . }}
+            {{ end }}
+        </div>
+        {{ end }}
+    </div>
+    {{ end }}
+    
+    <script>
+        // 显示/隐藏回复表单
+        document.querySelectorAll('.toggle-reply').forEach(button => {
+            button.addEventListener('click', function() {
+                const commentElement = this.closest('.comment');
+                const replyForm = commentElement.querySelector('.reply-form');
+                
+                if (replyForm.style.display === 'none') {
+                    replyForm.style.display = 'block';
+                    // 更新按钮文本
+                    this.innerHTML = '<svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/></svg> 取消回复';
+                } else {
+                    replyForm.style.display = 'none';
+                    // 恢复原始文本
+                    this.innerHTML = '<svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/><path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/></svg> 回复';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

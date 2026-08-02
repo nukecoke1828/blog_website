@@ -1,129 +1,53 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh">
 <head>
     <meta charset="UTF-8">
-    <title>博客列表</title>
-    <style>
-        /* 全局样式 */
-        body {
-            font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
-            line-height: 1.6;
-            color: #333;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f8f9fa;
-        }
-        
-        /* 头部样式 */
-        header {
-            margin-bottom: 30px;
-        }
-        
-        h1 {
-            color: #343a40;
-            border-bottom: 2px solid #dee2e6;
-            padding-bottom: 10px;
-        }
-        
-        /* 博客卡片样式 */
-        .blog-card {
-            background-color: white;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 25px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-        
-        .blog-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        
-        /* 博客标题样式 */
-        .blog-title {
-            font-size: 22px;
-            margin-bottom: 10px;
-        }
-        
-        .blog-title a {
-            color: #212529;
-            text-decoration: none;
-        }
-        
-        .blog-title a:hover {
-            color: #0d6efd;
-            text-decoration: underline;
-        }
-        
-        /* 博客内容样式 */
-        .blog-content {
-            font-size: 16px;
-            color: #495057;
-            margin-bottom: 15px;
-        }
-        
-        /* 博客标签样式 */
-        .blog-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            font-size: 14px;
-            color: #6c757d;
-        }
-        
-        .blog-tags span {
-            background-color: #e9ecef;
-            padding: 4px 8px;
-            border-radius: 4px;
-        }
-        
-        /* 分割线样式 */
-        hr {
-            border: none;
-            border-top: 1px solid #dee2e6;
-            margin: 20px 0;
-        }
-        
-        /* 无博客提示样式 */
-        .no-blogs {
-            text-align: center;
-            padding: 40px;
-            font-size: 18px;
-            color: #adb5bd;
-            background-color: #f8f9fa;
-            border-radius: 8px;
-        }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>博客 · NukeCoke's Blog</title>
+    <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
     {{template "nav.html" .}}
-    
-    <header>
-        <h1>我的博客</h1>
-    </header>
-    
-    <main>
+
+    <div class="container">
+        <h1 style="font-size:1.4rem; font-weight:650; margin-bottom:22px; color:var(--text);">博客</h1>
+
         {{ if .Blogs }}
             {{ range .Blogs }}
-                <article class="blog-card">
-                    <h2 class="blog-title"><a href="/blog/{{ .ID }}">{{ .Title }}</a></h2>
-                    <p class="blog-content">{{ .Content }}</p>
-                    <div class="blog-tags">
-                        <span>标签：</span>
-                        {{ range .Tags }}
-                            <span>{{ . }}</span>
-                        {{ end }}
-                    </div>
-                    <hr>
-                </article>
+            <article class="card fade-up">
+                <h2 class="card-title"><a href="/blog/{{ .ID }}">{{ .Title }}</a></h2>
+                <div class="card-meta">
+                    <span class="card-meta-item">
+                        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        {{ .Author.Username }}
+                    </span>
+                    <span class="card-meta-item">
+                        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                        {{ .CreatedAt }}
+                    </span>
+                </div>
+                <div class="card-body">{{ .Content }}</div>
+                {{ if .Tags }}<div class="tags-row">{{ range .Tags }}<span class="tag">{{ . }}</span>{{ end }}</div>{{ end }}
+            </article>
             {{ end }}
         {{ else }}
-            <div class="no-blogs">
-                <p>还没有发布任何博客。</p>
-            </div>
+            <div class="empty-state"><div class="icon">—</div><p>还没有文章，写点什么吧</p></div>
         {{ end }}
-    </main>
+
+        {{ if .Pagination }}
+        <div class="pagination">
+            {{ if .Pagination.HasPrev }}<a class="pg-item" href="/blog?page={{ .Pagination.PrevPage }}">‹ 上一页</a>{{ else }}<span class="pg-item disabled">‹ 上一页</span>{{ end }}
+            {{ range .Pagination.Pages }}
+                {{ if eq . -1 }}<span class="pg-item dots">…</span>
+                {{ else if eq . $.Pagination.CurrentPage }}<span class="pg-item current">{{ . }}</span>
+                {{ else }}<a class="pg-item" href="/blog?page={{ . }}">{{ . }}</a>{{ end }}
+            {{ end }}
+            {{ if .Pagination.HasNext }}<a class="pg-item" href="/blog?page={{ .Pagination.NextPage }}">下一页 ›</a>{{ else }}<span class="pg-item disabled">下一页 ›</span>{{ end }}
+        </div>
+        <div class="pagination-info">{{ .Pagination.Total }} 篇文章 · {{ .Pagination.CurrentPage }}/{{ .Pagination.TotalPages }} 页</div>
+        {{ end }}
+    </div>
+
+    <script src="/static/app.js"></script>
 </body>
 </html>

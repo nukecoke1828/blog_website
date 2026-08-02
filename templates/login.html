@@ -1,94 +1,36 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh">
 <head>
     <meta charset="UTF-8">
-    <title>登录</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            background-color: #f8f9fa;
-        }
-        
-        .login-container {
-            background-color: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 400px;
-        }
-        
-        h2 {
-            text-align: center;
-            color: #343a40;
-            margin-bottom: 25px;
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        label {
-            display: block;
-            margin-bottom: 8px;
-            color: #495057;
-            font-weight: 600;
-        }
-        
-        input {
-            width: 100%;
-            padding: 12px 15px;
-            border: 1px solid #ced4da;
-            border-radius: 5px;
-            font-size: 16px;
-            transition: border-color 0.3s ease;
-        }
-        
-        input:focus {
-            border-color: #0d6efd;
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.1);
-        }
-        
-        button {
-            background-color: #0d6efd;
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            font-size: 16px;
-            border-radius: 5px;
-            cursor: pointer;
-            width: 100%;
-            font-weight: 600;
-            transition: background-color 0.3s ease;
-        }
-        
-        button:hover {
-            background-color: #0b5ed7;
-        }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录 · NukeCoke's Blog</title>
+    <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-    <div class="login-container">
-        <h2>用户登录</h2>
-        <form action="/login" method="post">
-            <div class="form-group">
-                <label for="username">用户名:</label>
-                <input type="text" id="username" name="username" required>
+    <div class="login-page">
+        <div class="login-card">
+            <div style="text-align:center; margin-bottom:8px;">
+                <div style="width:48px; height:48px; border-radius:50%; margin:0 auto 12px;
+                    background: linear-gradient(135deg, var(--teal-200), var(--teal-400));
+                    display:flex; align-items:center; justify-content:center;
+                    color:#fff; font-size:1.2rem; box-shadow: 0 4px 16px rgba(45,212,191,.18);
+                ">·</div>
             </div>
-            
-            <div class="form-group">
-                <label for="password">密码:</label>
-                <input type="password" id="password" name="password" required>
-            </div>
-            
-            <button type="submit">登录</button>
-        </form>
+            <h2 class="login-title">欢迎</h2>
+            <form action="/login" method="post">
+                <div class="form-group">
+                    <label class="form-label" for="username">用户名</label>
+                    <input class="form-input" type="text" id="username" name="username" placeholder="输入用户名" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="password">密码</label>
+                    <input class="form-input" type="password" id="password" name="password" placeholder="输入密码" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block" style="margin-top:6px;">登录</button>
+            </form>
+            <p class="form-sub">新用户将自动注册</p>
+        </div>
     </div>
+    <script src="/static/app.js"></script>
 </body>
 </html>

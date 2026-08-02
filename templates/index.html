@@ -1,28 +1,32 @@
-﻿<!-- templates/index.html -->
 <!DOCTYPE html>
 <html lang="zh">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>我的个人博客</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ .Name }} · 博客</title>
+    <link rel="stylesheet" href="/static/style.css">
 </head>
-<body class="bg-gray-100 text-gray-800">
-  <div class="max-w-3xl mx-auto mt-10 p-6 bg-white rounded-2xl shadow-md">
-    <h1 class="text-4xl font-bold mb-4">你好，我是 {{ .Name }}</h1>
-    <p class="text-lg mb-4">{{ .Description }}</p>
+<body style="background-color: rgb(255, 255, 255); background-image: none;">
+    <div class="container" style="text-align:center; padding-top: 80px;">
+        <div style="
+            width:72px; height:72px; border-radius:50%; margin:0 auto 24px;
+            background: linear-gradient(135deg, var(--teal-200), var(--teal-400));
+            display:flex; align-items:center; justify-content:center; font-size:1.8rem;
+            color:#fff; box-shadow: 0 8px 28px rgba(45,212,191,.22);
+        ">·</div>
 
-    <div class="mt-6">
-      <h2 class="text-2xl font-semibold mb-2">联系方式</h2>
-      <ul class="list-disc list-inside">
-        <li>Email: {{ .Email }}</li>
-        <li>GitHub: <a class="text-blue-600 hover:underline" href="{{ .GitHub }}" target="_blank">{{ .GitHub }}</a></li>
-      </ul>
-    </div>
+        <h1 style="font-size:2rem; font-weight:700; color:var(--text); letter-spacing:-.5px;">你好，我是 {{ .Name }}</h1>
+        <p style="max-width:480px; margin:14px auto 36px; color:var(--text-secondary); font-size:.98rem; line-height:1.8;">
+            {{ .Description }}
+        </p>
 
-    <div class="mt-6">
-      <a href="/login" class="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">进入博客</a>
+        <div style="display:flex; gap:32px; justify-content:center; margin-bottom:40px; color:var(--text-secondary); font-size:.9rem;">
+            <span>{{ .Email }}</span>
+            <a href="{{ .GitHub }}" target="_blank" rel="noopener">GitHub</a>
+        </div>
+
+        <a href="/login" class="btn btn-primary btn-lg">进入博客</a>
     </div>
-  </div>
+    <script src="/static/app.js"></script>
 </body>
 </html>

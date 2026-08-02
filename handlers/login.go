@@ -1,4 +1,4 @@
-﻿package handlers
+package handlers
 
 import (
 	"errors"
@@ -12,31 +12,55 @@ import (
 )
 
 func LoginHandler(c *gin.Context) {
+	hashedPassword, err := utils.EncryptPassword(c.PostForm("password"))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "服务器内部错误"})
+		return
+	}
 	user := &models.User{
 		Username: c.PostForm("username"),
-		Password: c.PostForm("password"),
+		Password: hashedPassword,
 	}
 	result := models.DB.Where("username = ?", user.Username).First(&user)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-		log.Println("User not found")
+		log.Println("User not found, creating new user")
 		models.DB.Create(&user)
-		token, _ := utils.GenerateToken(c, user.ID, user.Username, user.IsAdmin)
-		c.SetCookie("token", token, 3600, "/", "localhost", false, true)
+		utils.SetTokenCookies(c, user)
 		c.Redirect(http.StatusSeeOther, "/blog")
 		return
 	} else if result.Error != nil {
 		log.Println(result.Error)
-	} else if user.Password != c.PostForm("password") {
-		c.JSON(401, gin.H{
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "数据库查询失败"})
+		return
+	} else if !utils.CheckPasswordHash(c.PostForm("password"), user.Password) {
+		c.JSON(http.StatusUnauthorized, gin.H{
 			"error": "Invalid password",
 		})
+		return
 	} else {
-		token, _ := utils.GenerateToken(c, user.ID, user.Username, user.IsAdmin)
-		c.SetCookie("token", token, 3600, "/", "localhost", false, true)
+		utils.SetTokenCookies(c, user)
 		c.Redirect(http.StatusSeeOther, "/blog")
 	}
 }
 
 func ShowLoginPage(c *gin.Context) {
-	c.HTML(http.StatusOK, "login.html", nil)
+	c.HTML(http.StatusOK, "login.html", gin.H{})
+}
+
+// LogoutHandler 登出：撤销 RefreshToken 并清除 Cookie
+func LogoutHandler(c *gin.Context) {
+	// 撤销 RefreshToken
+	refreshTokenStr, err := c.Cookie("refresh_token")
+	if err == nil && refreshTokenStr != "" {
+		if err := utils.RevokeRefreshToken(refreshTokenStr); err != nil {
+			log.Println("Failed to revoke refresh token:", err)
+		}
+	}
+	c.SetSameSite(http.SameSiteLaxMode)
+	// 清除 Cookie
+	c.SetCookie("token", "", -1, "/", "localhost", false, true)
+	c.SetCookie("refresh_token", "", -1, "/", "localhost", false, true)
+
+	// 跳转到登录页面
+	c.Redirect(http.StatusFound, "/login")
 }

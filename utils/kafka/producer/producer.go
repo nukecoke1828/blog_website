@@ -24,6 +24,12 @@ func NewKafkaProducer(brokers []string, topic string) *KafkaProducer {
 			RequiredAcks: kafka.RequireAll,    // 等待所有副本确认
 			BatchSize:    100,                 // 批量发送，可根据场景调整
 			BatchTimeout: 10 * time.Millisecond,
+			Async:        true,
+			Completion: func(messages []kafka.Message, err error) { // 异步发送完成回调
+				if err != nil {
+					log.Printf("kafka async send failed: %v", err)
+				}
+			},
 		},
 	}
 }

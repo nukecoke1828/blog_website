@@ -1,6 +1,24 @@
 ﻿version: '3.8'
 
 services:
+   # -------------------- Kafka Topic Init --------------------
+  kafka-init:
+    image: docker.io/bitnami/kafka:3.7
+    container_name: blog-kafka-init
+    depends_on:
+      kafka:
+        condition: service_healthy
+    entrypoint: >
+      bash -c "
+        echo 'Waiting for Kafka to be ready...' &&
+        sleep 5 &&
+        kafka-topics.sh --bootstrap-server kafka:9092 --create --if-not-exists --topic comment_topic --partitions 1 --replication-factor 1 &&
+        echo 'Topic comment_topic created' &&
+        sleep 2
+      "
+    networks:
+      - blog-network
+
   # -------------------- Go 应用 --------------------
   go-app:
     build: .
@@ -18,6 +36,8 @@ services:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
     depends_on:
+      kafka-init:
+        condition: service_completed_successfully  # 等 topic 创建完成后再启动
       mysql:
         condition: service_healthy
       etcd:

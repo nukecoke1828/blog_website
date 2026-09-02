@@ -116,7 +116,12 @@ cp .env.example .env
 MYSQL_ROOT_PASSWORD=your_root_password
 MYSQL_PASSWORD=your_blog_user_password
 DB_PASSWORD=your_db_password
+JWT_ACCESS_SECRET=your_access_secret
+JWT_REFRESH_SECRET=your_refresh_secret
+ADMIN_PASSWORD=admin_password
 ```
+
+其中 `JWT_ACCESS_SECRET`、`JWT_REFRESH_SECRET`、`ADMIN_PASSWORD` 可以使用提供的获取环境变量的方法设置默认值。
 
 3. **启动全部服务**
 
@@ -125,6 +130,13 @@ docker-compose up -d
 ```
 
 等待所有服务启动完成，访问 **http://localhost:8080** 即可看到博客首页。
+
+### 使用 Claude Code 技能一键启动（推荐）
+
+如果你正在使用 Claude Code，无需手动执行上面的命令，直接在项目目录下运行以下技能即可自动完成启动/停止：
+
+- **`/start-blog`** — 自动检查并补全缺失的环境变量（`JWT_ACCESS_SECRET`、`JWT_REFRESH_SECRET`、`ADMIN_PASSWORD`），然后执行 `docker-compose up -d` 启动全部服务
+- **`/stop-blog`** — 停止博客项目并清空容器中的所有数据（执行 `docker-compose down -v`）
 
 ### 本地开发（不使用 Docker）
 
@@ -141,9 +153,9 @@ export REDIS_HOST=localhost
 export REDIS_PORT=6379
 export KAFKA_BROKERS=localhost:9092
 export ETCD_ENDPOINTS=localhost:2379
-export JWT_ACCESS_SECRET=your_access_secret （使用docker也需要设置，也可以使用提供的获取环境变量的方法设置默认值）
-export JWT_REFRESH_SECRET=your_refresh_secret （使用docker也需要设置，也可以使用提供的获取环境变量的方法设置默认值）
-export ADMIN_PASSWORD=admin_password （使用docker也需要设置，也可以使用提供的获取环境变量的方法设置默认值）
+export JWT_ACCESS_SECRET=your_access_secret
+export JWT_REFRESH_SECRET=your_refresh_secret
+export ADMIN_PASSWORD=admin_password
 
 # 运行应用
 go run ./cmd

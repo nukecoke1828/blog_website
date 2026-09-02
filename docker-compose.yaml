@@ -35,6 +35,9 @@ services:
       - KAFKA_BROKERS=kafka:9092
       - REDIS_HOST=redis
       - REDIS_PORT=6379
+      - JWT_ACCESS_SECRET=${JWT_ACCESS_SECRET}
+      - JWT_REFRESH_SECRET=${JWT_REFRESH_SECRET}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD}
     depends_on:
       kafka-init:
         condition: service_completed_successfully  # 等 topic 创建完成后再启动
@@ -46,7 +49,7 @@ services:
         condition: service_healthy
       redis:
         condition: service_started
-    restart: on-failure
+    restart: unless-stopped
     networks:
       - blog-network
 
@@ -90,6 +93,7 @@ services:
     volumes:
       - etcd-data:/etcd-data
     command: /usr/local/bin/etcd
+    restart: unless-stopped
     networks:
       - blog-network
 
@@ -112,6 +116,7 @@ services:
       - "19092:9092"
     volumes:
       - kafka-data:/bitnami/kafka
+    restart: unless-stopped
     networks:
       - blog-network
     healthcheck:
